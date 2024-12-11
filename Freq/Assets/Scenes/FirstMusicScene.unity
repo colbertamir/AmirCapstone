@@ -1244,11 +1244,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 225402897}
   - {fileID: 542848769}
   - {fileID: 1455581974}
   - {fileID: 1241195802}
   - {fileID: 934216111}
-  - {fileID: 225402897}
   - {fileID: 2058137952}
   - {fileID: 1047005254}
   - {fileID: 1802117643}
@@ -2255,6 +2255,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48612ce6f75119444b91d029077abb19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _audioClip: {fileID: 8300000, guid: f284fc3a9ec35764d9090cb2e1ce6baa, type: 3}
+  _useMicrophone: 0
+  _selectedDevice: 
 --- !u!82 &1666912888
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2265,11 +2268,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: d4f5279056c5a264a83a64a392bcabb2, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

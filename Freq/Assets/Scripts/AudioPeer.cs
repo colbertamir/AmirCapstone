@@ -6,26 +6,69 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class AudioPeer : MonoBehaviour
 {
-    AudioSource _audioSource; // Reference to the AudioSource component
+    private AudioSource _audioSource; // Reference to the AudioSource component
+
+    public AudioClip _audioClip;
+    public bool _useMicrophone;
+
+    public string _selectedDevice;
     public static float[] _samples = new float[512]; // Array to store audio sample data
 
     public static float[] _freqBand = new float[8]; // Array to store 8 frequency bands
     public static float[] _bandBuffer = new float[8]; // Array to store buffer values for each frequency band
 
-    float[] _bufferDecrease = new float[8]; // Array to manage buffer decrease rate
+    private float[] _bufferDecrease = new float[8]; // Array to manage buffer decrease rate
 
     // Initialize AudioSource component
     void Start()
     {
         _audioSource = GetComponent<AudioSource>();
+
+        // Debugging available microphones
+        Debug.Log("Available Microphones:");
+        for (int i = 0; i < Microphone.devices.Length; i++) // Loop through the available devices using a for loop
+        {
+            Debug.Log(Microphone.devices[i]); // Log each device name
+        }
+
+        if (_useMicrophone)
+        {
+            if (Microphone.devices.Length > 0)
+            {
+                _selectedDevice = Microphone.devices[0]; // Select the first available microphone
+                Debug.Log("Selected Microphone: " + _selectedDevice);
+                _audioSource.clip = Microphone.Start(_selectedDevice, true, 10, AudioSettings.outputSampleRate);
+                _audioSource.loop = true; // Ensure continuous playback
+                _audioSource.mute = true; // Mute playback to avoid feedback
+
+                if (_audioSource.clip == null)
+                {
+                    Debug.LogError("Failed to initialize microphone.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("No microphone devices found.");
+                _useMicrophone = false;
+            }
+        }
+
+        if (!_useMicrophone)
+        {
+            _audioSource.clip = _audioClip;
+            _audioSource.Play();
+        }
     }
 
     // Update audio samples, frequency bands, and buffer each frame
     void Update()
     {
-        GetSpectrumAudioSource();
-        MakeFrequencyBands();
-        BandBuffer();
+        if (_audioSource.isPlaying || _useMicrophone)
+        {
+            GetSpectrumAudioSource();
+            MakeFrequencyBands();
+            BandBuffer();
+        }
     }
 
     // Retrieve spectrum data from the audio source
