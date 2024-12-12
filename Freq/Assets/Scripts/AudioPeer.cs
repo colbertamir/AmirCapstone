@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 // Ensure an AudioSource component is attached to the GameObject
 [RequireComponent(typeof(AudioSource))]
@@ -19,6 +20,9 @@ public class AudioPeer : MonoBehaviour
 
     private float[] _bufferDecrease = new float[8]; // Array to manage buffer decrease rate
 
+    public AudioMixerGroup musicGroup;
+    public AudioMixerGroup microphoneGroup;
+
     // Initialize AudioSource component
     void Start()
     {
@@ -35,12 +39,13 @@ public class AudioPeer : MonoBehaviour
         {
             if (Microphone.devices.Length > 0)
             {
+                _audioSource.outputAudioMixerGroup = microphoneGroup;
                 _selectedDevice = Microphone.devices[0]; // Select the first available microphone
                 Debug.Log("Selected Microphone: " + _selectedDevice);
                 _audioSource.clip = Microphone.Start(_selectedDevice, true, 10, AudioSettings.outputSampleRate);
                 _audioSource.loop = true; // Ensure continuous playback
-                _audioSource.mute = true; // Mute playback to avoid feedback
-
+                // _audioSource.mute = true; // Mute playback to avoid feedback
+                _audioSource.Play();
                 if (_audioSource.clip == null)
                 {
                     Debug.LogError("Failed to initialize microphone.");
@@ -55,10 +60,12 @@ public class AudioPeer : MonoBehaviour
 
         if (!_useMicrophone)
         {
+            _audioSource.outputAudioMixerGroup = musicGroup;
             _audioSource.clip = _audioClip;
             _audioSource.Play();
         }
     }
+
 
     // Update audio samples, frequency bands, and buffer each frame
     void Update()
